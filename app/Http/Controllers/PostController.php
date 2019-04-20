@@ -60,7 +60,7 @@ class PostController extends Controller
             'title' => $request->input('title'),
             'content' => $request->input('content')
         ]);
-        $post->save();
+        Auth::user()->posts()->save($post);
         $post->tags()->attach($request->input('tags') === null ? [] : $request->input('tags'));
 
         return redirect()->route('admin.index')->with('info', 'Post created, Title is: ' . $request->input('title'));
@@ -77,7 +77,7 @@ class PostController extends Controller
         $post->content = $request->input('content');
         if (Gate::denies('update -post ', $post)) { return redirect()->back(); }
 
-        $post->save();
+        Auth::user()->posts()->save($post);
 //        $post->tags()->detach();
 //        $post->tags()->attach($request->input('tags') === null ? [] : $request->input('tags'));
         $post->tags()->sync($request->input('tags') === null ? [] : $request->input('tags'));
